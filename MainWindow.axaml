@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" Height="600"
+        x:Class="CardDecksApp.MainWindow"
+        Title="CardDecksApp"
+        Background="Magenta">
+
+  <Window.Styles>
+    <StyleInclude Source="/Styles/Style.xaml"/>
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto, *" Classes="contentContainer" Background="Gray">
+    <StackPanel Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" Orientation="Horizontal">
+        <TextBox Width="150" Text="{Binding SearchName, Mode=TwoWay}" />
+        <Button Classes="btn" Command="{Binding ClearSearch}"> Х </Button>
+        <Button Classes="btn" Command="{Binding FindDeck}"> Поиск </Button>
+    </StackPanel>
+      <Border Classes="header" Grid.Row="0">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+        <TextBlock FontSize="16" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Коллекция колод" />
+        <StackPanel Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+          <Button Classes="btn" IsVisible="{Binding IsZeroStep}" Command="{Binding CreateDeck}"> Создать колоду </Button>
+          <TextBlock FontSize="14" VerticalAlignment="Center" IsVisible="{Binding IsFirstStep}" Text="Введите название колоды " />
+          <TextBox Width="150" IsVisible="{Binding IsFirstStep}" Text="{Binding DeckName, Mode=TwoWay}" />
+          <Button Classes="btn" IsVisible="{Binding IsFirstStep}" Command="{Binding FillName}"> Далее </Button>
+          <Button Classes="btn" IsVisible="{Binding IsSecondStep}" Command="{Binding FillDeck36}"> 36 карт </Button>
+          <Button Classes="btn" IsVisible="{Binding IsSecondStep}" Command="{Binding FillDeck52}"> 52 карты </Button>
+          <Button Classes="btn" IsVisible="{Binding IsSecondStep}" Command="{Binding FillDeck54}"> 54 карты </Button>
+          <TextBlock FontSize="14" VerticalAlignment="Center" IsVisible="{Binding IsFaildName}" Text="Название уже используется! " />
+          <Button Classes="btn1" IsVisible="{Binding IsFaildName}" Command="{Binding CancelDeckCreation}"> Понятно </Button>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+    
+    <ProgressBar
+          VerticalAlignment="Center"
+          HorizontalAlignment="Center"
+          IsVisible="{Binding InitializationNotifier.IsNotCompleted}"
+          Classes="progressBar" IsIndeterminate="True"/>
+    
+    <StackPanel Grid.Row="1">
+      <ListBox  IsVisible="{Binding InitializationNotifier.IsCompleted, Mode=TwoWay}"
+              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+              Items="{Binding SearchDecks}" 
+              SelectedItem="{Binding Deck, Mode=TwoWay}"
+              Grid.Column="0"
+              Tapped="ListBox_Tapped">
+        
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid Grid.Column="0">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="200"/>
+                <RowDefinition Height="Auto" MinHeight="48"/>
+              </Grid.RowDefinitions>
+              <Image Grid.Row="0" Stretch="Uniform" Source="{Binding Poster}" />
+              <Border Grid.Row="1" >
+                <Grid ColumnDefinitions="*, 0.4*" Margin="4">
+                  <TextBlock FontSize="14" Text="{Binding Name}" />
+                  <TextBlock FontSize="18" FontStyle="Oblique" Grid.Column="1" Text="{Binding Capacity}" />
+                </Grid>
+              </Border>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel ItemWidth="200" MinHeight="140" Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+      </ListBox>
+
+      <Border Classes="header">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+          <TextBlock FontSize="16" FontWeight="Bold" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Коллекция карт в колоде" />
+          <StackPanel Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+            <Button Classes="btn" Margin="5" Command="{Binding ShuffleDeck}"> Перетасовать колоду </Button>
+            <Button Classes="btn" Margin="5" Command="{Binding DeleteDeck}"> Удалить колоду </Button>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <ListBox IsVisible="{Binding InitializationNotifier.IsCompleted, Mode=TwoWay}"
+              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+              Items="{Binding Cards}" Grid.Column="1">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="Auto" MinHeight="48"/>
+              </Grid.RowDefinitions>
+              <Image Stretch="Uniform" Source="{Binding Poster}"/>
+              <TextBlock Grid.Row="1" FontSize="12" HorizontalAlignment="Center" Text="{Binding Name}" />
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel ItemWidth="120" MinHeight="140" Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+      </ListBox>
+    </StackPanel>
+  </Grid>
+</Window>
